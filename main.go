@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 
-	"github.com/kodacampmain/koda3/internals/collection"
-	"github.com/kodacampmain/koda3/internals/numbers"
-	"github.com/kodacampmain/koda3/internals/utils"
+	"github.com/kodacampmain/koda3_go/internals/collection"
+	"github.com/kodacampmain/koda3_go/internals/numbers"
+	"github.com/kodacampmain/koda3_go/internals/utils"
 )
 
 func main() {
