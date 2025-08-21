@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/kodacampmain/koda3_go/internals/checkout"
+	"github.com/kodacampmain/koda3_go/internals/checkout/bank"
+	"github.com/kodacampmain/koda3_go/internals/checkout/fiction"
+	"github.com/kodacampmain/koda3_go/internals/checkout/online"
 	"github.com/kodacampmain/koda3_go/internals/intermediate"
 	minitask1 "github.com/kodacampmain/koda3_go/internals/minitask_1"
-	"github.com/kodacampmain/koda3_go/internals/service"
 )
 
 func main() {
@@ -119,29 +122,51 @@ func main() {
 	// fmt.Println(name)
 	// setter method
 
-	samsung := intermediate.TV{}
-	gree := intermediate.AC{}
-	miyako := intermediate.ElectricFan{}
+	// samsung := intermediate.TV{}
+	// gree := intermediate.AC{}
+	// miyako := intermediate.ElectricFan{}
 
-	intermediate.UniversalRemote("ON", &samsung)
-	intermediate.UniversalRemote("ON", &gree)
-	intermediate.UniversalRemote("ON", &miyako)
-	intermediate.UniversalRemote("OFF", &gree)
-	intermediate.UniversalRemote("OFF", &samsung)
+	// intermediate.UniversalRemote("ON", &samsung)
+	// intermediate.UniversalRemote("ON", &gree)
+	// intermediate.UniversalRemote("ON", &miyako)
+	// intermediate.UniversalRemote("OFF", &gree)
+	// intermediate.UniversalRemote("OFF", &samsung)
 
-	result := service.MakePizza()
-	log.Printf("Pizza berhasil dibuat dengan keju %s dan saus tomat %s", result.Cheese.Type, result.Tomato.Brand)
+	// result := service.MakePizza()
+	// log.Printf("Pizza berhasil dibuat dengan keju %s dan saus tomat %s", result.Cheese.Type, result.Tomato.Brand)
 
-	mozarella := service.NewCheese("Mozarella")
-	cheddar := service.NewCheese("Cheddar")
-	heinz := service.NewTomato("Heinz")
-	ayam := service.NewTomato("Ayam")
-	betterResult1 := service.BetterMakePizza(mozarella, heinz)
-	betterResult2 := service.BetterMakePizza(mozarella, ayam)
-	betterResult3 := service.BetterMakePizza(cheddar, heinz)
-	betterResult4 := service.BetterMakePizza(cheddar, ayam)
-	service.LogPizza(betterResult1)
-	service.LogPizza(betterResult2)
-	service.LogPizza(betterResult3)
-	service.LogPizza(betterResult4)
+	// mozarella := service.NewCheese("Mozarella")
+	// cheddar := service.NewCheese("Cheddar")
+	// heinz := service.NewTomato("Heinz")
+	// ayam := service.NewTomato("Ayam")
+	// betterResult1 := service.BetterMakePizza(mozarella, heinz)
+	// betterResult2 := service.BetterMakePizza(mozarella, ayam)
+	// betterResult3 := service.BetterMakePizza(cheddar, heinz)
+	// betterResult4 := service.BetterMakePizza(cheddar, ayam)
+	// service.LogPizza(betterResult1)
+	// service.LogPizza(betterResult2)
+	// service.LogPizza(betterResult3)
+	// service.LogPizza(betterResult4)
+
+	// if err := filereader.Read("./docs/file.txt"); err != nil {
+	// 	log.Println(err.Error())
+	// }
+	// if err := filereader.Read("./docs/file"); err != nil {
+	// 	log.Println(err.Error())
+	// }
+	// if err := filereader.Read("./docs"); err != nil {
+	// 	log.Println(err.Error())
+	// }
+
+	br := bank.NewBankRut("Bank Rut")
+	sp := online.NewSindbadPay("Sindbad Pay")
+	ttz := fiction.NewTTZ("TTZ")
+
+	checkout.Checkout(br, []int{10, 20, 30})
+	checkout.Checkout(sp, []int{30, 20, 40})
+	checkout.Checkout(ttz, []int{20, 20, 10})
+	checkout.Checkout(ttz, []int{40, 20, -15})
+	checkout.Checkout(ttz, []int{20, 50, 100})
+
+	log.Println(ttz.Payments)
 }
