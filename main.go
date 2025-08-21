@@ -1,15 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"log"
+	"sync"
 
-	"github.com/kodacampmain/koda3_go/internals/checkout"
-	"github.com/kodacampmain/koda3_go/internals/checkout/bank"
-	"github.com/kodacampmain/koda3_go/internals/checkout/fiction"
-	"github.com/kodacampmain/koda3_go/internals/checkout/online"
 	"github.com/kodacampmain/koda3_go/internals/intermediate"
-	minitask1 "github.com/kodacampmain/koda3_go/internals/minitask_1"
+	"github.com/kodacampmain/koda3_go/internals/utils"
 )
 
 func main() {
@@ -50,9 +45,9 @@ func main() {
 	// 	Id:     68,
 	// }
 	// fmt.Println(batman)
-	smk := minitask1.NewSchool("SMK Sumber Rejeki", "Electrical")
-	ithb := minitask1.NewSchool("Institut Teknologi Harapan Bangsa", "Electrical Engineering")
-	user := minitask1.NewPerson("Andi", "andi.webp", "andi@mail.com", "+6285768904329", 25, false, []minitask1.School{smk, ithb})
+	// smk := minitask1.NewSchool("SMK Sumber Rejeki", "Electrical")
+	// ithb := minitask1.NewSchool("Institut Teknologi Harapan Bangsa", "Electrical Engineering")
+	// user := minitask1.NewPerson("Andi", "andi.webp", "andi@mail.com", "+6285768904329", 25, false, []minitask1.School{smk, ithb})
 	// user := minitask1.Person{
 	// 	Name:        "Andi",
 	// 	Photo:       "andi.webp",
@@ -66,10 +61,10 @@ func main() {
 	// 	},
 	// }
 	// fmt.Println(user)
-	user.GetBiodata()
-	fmt.Printf("Sudah punya KTP: %t\n", user.IsEligibleForKTP())
-	user.UpdateName("Candra")
-	user.GetBiodata()
+	// user.GetBiodata()
+	// fmt.Printf("Sudah punya KTP: %t\n", user.IsEligibleForKTP())
+	// user.UpdateName("Candra")
+	// user.GetBiodata()
 
 	// email := "a@mail.com"
 	// pass := "pass"
@@ -158,15 +153,91 @@ func main() {
 	// 	log.Println(err.Error())
 	// }
 
-	br := bank.NewBankRut("Bank Rut")
-	sp := online.NewSindbadPay("Sindbad Pay")
-	ttz := fiction.NewTTZ("TTZ")
+	// br := bank.NewBankRut("Bank Rut")
+	// sp := online.NewSindbadPay("Sindbad Pay")
+	// ttz := fiction.NewTTZ("TTZ")
 
-	checkout.Checkout(br, []int{10, 20, 30})
-	checkout.Checkout(sp, []int{30, 20, 40})
-	checkout.Checkout(ttz, []int{20, 20, 10})
-	checkout.Checkout(ttz, []int{40, 20, -15})
-	checkout.Checkout(ttz, []int{20, 50, 100})
+	// checkout.Checkout(br, []int{10, 20, 30})
+	// checkout.Checkout(sp, []int{30, 20, 40})
+	// checkout.Checkout(ttz, []int{20, 20, 10})
+	// checkout.Checkout(ttz, []int{40, 20, -15})
+	// checkout.Checkout(ttz, []int{20, 50, 100})
 
-	log.Println(ttz.Payments)
+	// log.Println(ttz.Payments)
+
+	// fmt.Printf("Jumlah core yang available: %d\n", runtime.NumCPU())
+
+	var wg sync.WaitGroup
+	// var mtx sync.Mutex
+	var rw sync.RWMutex
+	chn := make(chan string)
+
+	for range 4 {
+		wg.Add(3)
+		// go utils.Task(i, &wg)
+		// go utils.Task(i+10, &wg)
+		// wg.Add(1)
+		rw.RLock()
+		go utils.Read(&wg, chn, &rw, false)
+		go utils.Read(&wg, chn, &rw, true)
+		// out := <-chn
+		// fmt.Println(out)
+		// wg.Wait()
+		// wg.Add(1)
+		rw.Lock()
+		go utils.Write(&wg, chn, &rw)
+		// msg := <-chn
+		// log.Println(msg)
+		// wg.Wait()
+	}
+
+	// time.Sleep(1 * time.Second)
+	wg.Wait() // blocking hingga wg counter bernilai 0
+
+	// customers := []string{"Inkam", "Bonai", "Slamet", "Fepp", "Sdck"}
+	// customerOrder := make(chan string, 2)
+	// var wg sync.WaitGroup
+
+	// wg.Add(2)
+	// go service.Barista(customerOrder, 100200, &wg)
+	// go service.Barista(customerOrder, 111222, &wg)
+	// // Pemesanan
+	// for _, customer := range customers {
+	// 	fmt.Printf("%s places order\n", customer)
+	// 	customerOrder <- fmt.Sprintf("%s's Latte", customer)
+
+	// 	fmt.Printf("%s's order accepted (Queue size: %d)\n", customer, len(customerOrder))
+	// 	time.Sleep(500 * time.Millisecond)
+	// }
+
+	// // Tutup toko
+	// close(customerOrder)
+	// // menutup channel harus dari sender
+	// // time.Sleep(6 * time.Second)
+	// wg.Wait()
+	// fmt.Println("Coffee shop is closed")
+
+	// orders := []struct {
+	// 	Name string
+	// 	Type string
+	// }{{Name: "Roti", Type: "food"}, {Name: "Kopi", Type: "drink"}, {Name: "Nasi Goreng", Type: "food"}, {Name: "Teh", Type: "drink"}, {Name: "Mie Rebus", Type: "food"}, {Name: "Susu", Type: "drink"}}
+	// makanan := make(chan string)
+	// minuman := make(chan string)
+	// selesai := make(chan bool)
+	// var wg sync.WaitGroup
+	// wg.Add(1)
+	// go service.Kitchen(makanan, minuman, selesai, &wg)
+	// for _, order := range orders {
+	// 	if order.Type == "food" {
+	// 		makanan <- order.Name
+	// 		continue
+	// 	}
+	// 	if order.Type == "drink" {
+	// 		minuman <- order.Name
+	// 		continue
+	// 	}
+	// }
+	// selesai <- true
+	// wg.Wait()
+	// fmt.Println("Kitchen Closed")
 }
