@@ -1,10 +1,8 @@
 package main
 
 import (
-	"sync"
-
 	"github.com/kodacampmain/koda3_go/internals/intermediate"
-	"github.com/kodacampmain/koda3_go/internals/utils"
+	m3 "github.com/kodacampmain/koda3_go/internals/minitask_3"
 )
 
 func main() {
@@ -167,32 +165,32 @@ func main() {
 
 	// fmt.Printf("Jumlah core yang available: %d\n", runtime.NumCPU())
 
-	var wg sync.WaitGroup
+	// var wg sync.WaitGroup
 	// var mtx sync.Mutex
-	var rw sync.RWMutex
-	chn := make(chan string)
+	// var rw sync.RWMutex
+	// chn := make(chan string)
 
-	for range 4 {
-		wg.Add(3)
-		// go utils.Task(i, &wg)
-		// go utils.Task(i+10, &wg)
-		// wg.Add(1)
-		rw.RLock()
-		go utils.Read(&wg, chn, &rw, false)
-		go utils.Read(&wg, chn, &rw, true)
-		// out := <-chn
-		// fmt.Println(out)
-		// wg.Wait()
-		// wg.Add(1)
-		rw.Lock()
-		go utils.Write(&wg, chn, &rw)
-		// msg := <-chn
-		// log.Println(msg)
-		// wg.Wait()
-	}
+	// for range 4 {
+	// 	wg.Add(3)
+	// 	// go utils.Task(i, &wg)
+	// 	// go utils.Task(i+10, &wg)
+	// 	// wg.Add(1)
+	// 	rw.RLock()
+	// 	go utils.Read(&wg, chn, &rw, false)
+	// 	go utils.Read(&wg, chn, &rw, true)
+	// 	// out := <-chn
+	// 	// fmt.Println(out)
+	// 	// wg.Wait()
+	// 	// wg.Add(1)
+	// 	rw.Lock()
+	// 	go utils.Write(&wg, chn, &rw)
+	// 	// msg := <-chn
+	// 	// log.Println(msg)
+	// 	// wg.Wait()
+	// }
 
 	// time.Sleep(1 * time.Second)
-	wg.Wait() // blocking hingga wg counter bernilai 0
+	// wg.Wait() // blocking hingga wg counter bernilai 0
 
 	// customers := []string{"Inkam", "Bonai", "Slamet", "Fepp", "Sdck"}
 	// customerOrder := make(chan string, 2)
@@ -240,4 +238,24 @@ func main() {
 	// selesai <- true
 	// wg.Wait()
 	// fmt.Println("Kitchen Closed")
+	// routines := []string{"Bangun", "Mandi", "Sarapan"}
+	// var wg sync.WaitGroup
+
+	// for i, routine := range routines {
+	// 	wg.Add(1)
+	// 	go minitask3.DoTask(routine, 100*(i+1), &wg)
+	// 	wg.Wait()
+	// }
+	// // wg.Wait()
+	// fmt.Println("Berangkat Kerja")
+	familyChannel := make(chan m3.Message)
+	go m3.NewWhiteBoard().Listen(familyChannel)
+
+	m3.NewMessage("Mom", "Lets get breakfast").Send(familyChannel)
+	m3.NewMessage("Dad", "I need help to fix the roof").Send(familyChannel)
+	m3.NewMessage("Bigbro", "Come here, lemme smurf on your account").Send(familyChannel)
+	m3.NewMessage("Brother 2", "Lets play FIFA").Send(familyChannel)
+	m3.NewMessage("Sister", "Accompany me to a mall. Be my chaperone").Send(familyChannel)
+
+	close(familyChannel)
 }
